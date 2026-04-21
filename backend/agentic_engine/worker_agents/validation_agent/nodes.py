@@ -1,288 +1,155 @@
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import JsonOutputParser, StrOutputParser, PydanticOutputParser
+# validation_agent/nodes.py
 
-from .llm import get_llm
-from .prompts import SYSTEM_IDENTITY, INTAKE_PROMPT, PROBLEM_PROMPT, PERSONA_PROMPT, COMPETITOR_PROMPT, PRICING_PROMPT
 from .utils import add_error
-from .schemas import ParsedIdeaSchema, ProblemAnalysisSchema, PricingSchema
 
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import PydanticOutputParser
+# Reusable workflow tools
+from ...tools.medium_level_tools.research_tool import run_research
+from ...tools.medium_level_tools.competitor_tool import run_competitor_tool
+from ...tools.medium_level_tools.pain_signal_tool import run_pain_signal
+from ...tools.medium_level_tools.pricing_tool import run_pricing_tool
 
-
-
+# ==========================================
+# INTAKE NODE (keep simple)
+# ==========================================
 
 def intake_node(state):
     try:
-        parser = PydanticOutputParser(pydantic_object=ParsedIdeaSchema)
-
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", SYSTEM_IDENTITY),
-                ("human", INTAKE_PROMPT + "\n\n{format_instructions}")
-            ]
-        )
-
-        chain = prompt | get_llm() | parser
-
-        result = chain.invoke(
-            {
-                "idea": state["user_input"],
-                "format_instructions": parser.get_format_instructions(),
-            }
-        )
-
-        state["parsed_idea"] = result.model_dump()
+        state["parsed_idea"] = {
+            "startup_idea": state["user_input"]
+        }
         return state
 
     except Exception as e:
-        return add_error(state, f"intake_node failed: {str(e)}")
+        return add_error(state, str(e))
 
 
-###############################################################
+# ==========================================
+# RESEARCH NODE
+# ==========================================
 
+def research_node(state):
+    try:
+        topic = state["parsed_idea"]["startup_idea"]
+
+        result = run_research(topic)
+
+        state["market_research"] = result["final_report"]
+        return state
+
+    except Exception as e:
+        return add_error(state, f"research_node: {str(e)}")
+
+
+# ==========================================
+# PROBLEM NODE
+# ==========================================
 
 def problem_node(state):
     try:
-        parser = PydanticOutputParser(pydantic_object=ProblemAnalysisSchema)
+        topic = state["parsed_idea"]["startup_idea"]
 
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", SYSTEM_IDENTITY),
-                ("human", PROBLEM_PROMPT + "\n\n{format_instructions}")
-            ]
-        )
+        result = run_pain_signal(topic)
 
-        chain = prompt | get_llm() | parser
+        report = result["final_report"]
 
-        result = chain.invoke(
-            {
-                "idea": state["parsed_idea"]["startup_idea"],
-                "format_instructions": parser.get_format_instructions(),
-            }
-        )
+        state["problem_analysis"] = {
+            "pain_score": report["severity_score"],
+            "reasons": report["pain_points"],
+            "sentiment": report["sentiment"]
+        }
 
-        state["problem_analysis"] = result.model_dump()
         return state
 
     except Exception as e:
-        return add_error(state, f"problem_node failed: {str(e)}")
-    
-
-##########################################################
+        return add_error(state, f"problem_node: {str(e)}")
 
 
-def persona_node(state):
-    try:
-        parser = JsonOutputParser()
-
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", SYSTEM_IDENTITY),
-                ("human", PERSONA_PROMPT)
-            ]
-        )
-
-        chain = prompt | get_llm() | parser
-
-        result = chain.invoke(
-            {
-                "idea": state["parsed_idea"]["startup_idea"],
-            }
-        )
-
-        state["personas"] = result if isinstance(result, list) else []
-        return state
-
-    except Exception as e:
-        return add_error(state, f"persona_node failed: {str(e)}")
-
-
-##############################################################
+# ==========================================
+# COMPETITOR NODE
+# ==========================================
 
 def competitor_node(state):
     try:
-        parser = JsonOutputParser()
+        topic = state["parsed_idea"]["startup_idea"]
 
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", SYSTEM_IDENTITY),
-                ("human", COMPETITOR_PROMPT)
-            ]
-        )
+        result = run_competitor_tool(topic)
 
-        chain = prompt | get_llm() | parser
+        state["competitor_analysis"] = \
+            result["final_report"]
 
-        result = chain.invoke(
-            {
-                "idea": state["parsed_idea"]["startup_idea"],
-            }
-        )
-
-        state["competitors"] = result if isinstance(result, list) else []
         return state
 
     except Exception as e:
-        return add_error(state, f"competitor_node failed: {str(e)}")
+        return add_error(state, f"competitor_node: {str(e)}")
 
 
-################################################################
+# ==========================================
+# PRICING NODE
+# ==========================================
 
 def pricing_node(state):
     try:
-        parser = PydanticOutputParser(pydantic_object=PricingSchema)
+        topic = state["parsed_idea"]["startup_idea"]
 
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", SYSTEM_IDENTITY),
-                ("human", PRICING_PROMPT + "\n\n{format_instructions}")
-            ]
-        )
+        result = run_pricing_tool(topic)
 
-        chain = prompt | get_llm() | parser
+        report = result["final_report"]
 
-        result = chain.invoke(
-            {
-                "idea": state["parsed_idea"]["startup_idea"],
-                "format_instructions": parser.get_format_instructions(),
-            }
-        )
+        state["pricing_analysis"] = {
+            "pricing_models":
+                report["pricing_models"],
+            "estimated_range":
+                report["estimated_range"],
+            "willingness_to_pay":
+                report["monetization_score"]
+        }
 
-        state["pricing_analysis"] = result.model_dump()
         return state
 
     except Exception as e:
-        return add_error(state, f"pricing_node failed: {str(e)}")
+        return add_error(state, f"pricing_node: {str(e)}")
     
-
-#####################################################################
-
-
-
-def gap_node(state):
-    try:
-        prompt = ChatPromptTemplate.from_template("""
-Find whitespace opportunities for this startup.
-
-Idea:
-{idea}
-
-Competitors:
-{competitors}
-
-Return JSON array of market gaps.
-""")
-
-        chain = prompt | get_llm() | JsonOutputParser()
-
-        result = chain.invoke({
-            "idea": state["parsed_idea"]["startup_idea"],
-            "competitors": state.get("competitors", [])
-        })
-
-        state["market_gaps"] = result if isinstance(result, list) else []
-        return state
-
-    except Exception as e:
-        return add_error(state, f"gap_node failed: {str(e)}")
-
-
-######################################################################
-
-def skeptic_node(state):
-    try:
-        prompt = ChatPromptTemplate.from_template("""
-            Act like a skeptical investor.
-
-            Startup Idea:
-            {idea}
-
-            Pain Analysis:
-            {pain}
-
-            Pricing:
-            {pricing}
-
-            Competitors:
-            {competitors}
-
-            Return JSON array of brutal concerns.
-        """)
-
-        chain = prompt | get_llm() | JsonOutputParser()
-
-        result = chain.invoke({
-            "idea": state["parsed_idea"]["startup_idea"],
-            "pain": state.get("problem_analysis", {}),
-            "pricing": state.get("pricing_analysis", {}),
-            "competitors": state.get("competitors", [])
-        })
-
-        state["skeptic_notes"] = result if isinstance(result, list) else []
-        return state
-
-    except Exception as e:
-        return add_error(state, f"skeptic_node failed: {str(e)}")
-
-#########################################################
-
-
-def uvp_node(state):
-    try:
-        prompt = ChatPromptTemplate.from_template("""
-            Create a sharp Unique Value Proposition.
-
-            Idea:
-            {idea}
-
-            Pain:
-            {pain}
-
-            Market Gaps:
-            {gaps}
-
-            Return only final UVP sentence.
-        """)
-
-        chain = prompt | get_llm() | StrOutputParser()
-
-        result = chain.invoke({
-            "idea": state["parsed_idea"]["startup_idea"],
-            "pain": state.get("problem_analysis", {}),
-            "gaps": state.get("market_gaps", [])
-        })
-
-        state["uvp"] = result.strip()
-        return state
-
-    except Exception as e:
-        return add_error(state, f"uvp_node failed: {str(e)}")
-
-
-###########################################################
-
+    
+# ==========================================
+# JUDGE NODE
+# ==========================================
 
 def judge_node(state):
     try:
-        pain = state.get("problem_analysis", {}).get("pain_score", 0)
-        urgency = state.get("problem_analysis", {}).get("urgency_score", 0)
-        freq = state.get("problem_analysis", {}).get("frequency_score", 0)
-        wtp = state.get("pricing_analysis", {}).get("willingness_to_pay", 0)
+        problem = state.get("problem_analysis", {})
+        pricing = state.get("pricing_analysis", {})
+        comp = str(state.get("competitor_analysis", "")).lower()
+        skeptic = str(state.get("skeptic_notes", "")).lower()
 
-        score = (
+        pain = problem.get("pain_score", 0)
+        monetization = pricing.get("willingness_to_pay", 0)
+
+        # Derived Scores
+        competition_window = 7
+        if "crowded" in comp:
+            competition_window = 4
+        elif "gap" in comp:
+            competition_window = 8
+
+        execution_risk = 7
+        if "hard" in skeptic or "risk" in skeptic:
+            execution_risk = 5
+
+        # Weighted Total
+        total = (
             pain * 0.35 +
-            urgency * 0.20 +
-            freq * 0.15 +
-            wtp * 0.30
-        ) * 10
+            monetization * 0.25 +
+            competition_window * 0.20 +
+            execution_risk * 0.20
+        )
 
-        score = int(score)
+        score = int(total * 10)
 
-        if score >= 75:
+        if score >= 80:
             verdict = "PROCEED"
-        elif score >= 60:
+        elif score >= 65:
             verdict = "NICHE DOWN"
-        elif score >= 40:
+        elif score >= 45:
             verdict = "PIVOT"
         else:
             verdict = "REJECT"
@@ -290,46 +157,219 @@ def judge_node(state):
         state["confidence_score"] = score
         state["verdict"] = verdict
 
-        recs = []
-
-        if verdict == "PROCEED":
-            recs.append("Begin customer interviews immediately")
-            recs.append("Build MVP quickly")
-        elif verdict == "NICHE DOWN":
-            recs.append("Target narrower segment")
-        elif verdict == "PIVOT":
-            recs.append("Rework customer or pain point")
-        else:
-            recs.append("Do not build yet")
-
-        state["recommendations"] = recs
-
-        return state
-
-    except Exception as e:
-        return add_error(state, f"judge_node failed: {str(e)}")
-
-
-#########################################################
-
-def report_node(state):
-    try:
-        state["final_report"] = {
-            "idea": state["parsed_idea"]["startup_idea"],
-            "problem_analysis": state.get("problem_analysis", {}),
-            "personas": state.get("personas", []),
-            "competitors": state.get("competitors", []),
-            "pricing": state.get("pricing_analysis", {}),
-            "market_gaps": state.get("market_gaps", []),
-            "skeptic_notes": state.get("skeptic_notes", []),
-            "uvp": state.get("uvp", ""),
-            "confidence_score": state.get("confidence_score", 0),
-            "verdict": state.get("verdict", ""),
-            "recommendations": state.get("recommendations", []),
-            "errors": state.get("errors", [])
+        state["judge_summary"] = {
+            "pain": pain,
+            "monetization": monetization,
+            "competition_window": competition_window,
+            "execution_risk": execution_risk
         }
 
         return state
 
     except Exception as e:
-        return add_error(state, f"report_node failed: {str(e)}")
+        return add_error(state, f"judge_node: {str(e)}")
+    
+
+# ==========================================
+# REPORT NODE
+# ==========================================
+
+def report_node(state):
+    state["final_report"] = {
+        "idea": state["user_input"],
+        "verdict": state.get("verdict", ""),
+        "confidence_score": state.get("confidence_score", 0),
+
+        "scores": state.get("judge_summary", {}),
+
+        "pain_analysis": state.get("problem_analysis", {}),
+        "personas": state.get("personas", ""),
+        "competition": state.get("competitor_analysis", {}),
+        "pricing": state.get("pricing_analysis", {}),
+        "market_gaps": state.get("market_gaps", ""),
+        "uvp": state.get("uvp", ""),
+        "risks": state.get("skeptic_notes", ""),
+
+        "next_actions": self_actions(
+            state.get("verdict", "")
+        ),
+
+        "errors": state.get("errors", [])
+    }
+
+    return state
+
+
+def self_actions(verdict):
+    if verdict == "PROCEED":
+        return [
+            "Run 10 customer interviews",
+            "Build MVP",
+            "Test landing page"
+        ]
+    elif verdict == "NICHE DOWN":
+        return [
+            "Choose smaller target segment",
+            "Refine offer"
+        ]
+    elif verdict == "PIVOT":
+        return [
+            "Change customer or pain point"
+        ]
+    else:
+        return [
+            "Do not build yet",
+            "Try new problem area"
+        ]
+    
+
+    
+### persona node
+
+def persona_node(state):
+    try:
+        idea = state["parsed_idea"]["startup_idea"]
+
+        pain = str(state.get("problem_analysis", {}))
+        comp = str(state.get("competitor_analysis", {}))
+
+        from .llm import get_llm
+        llm = get_llm()
+
+        prompt = f"""
+            Based on this startup idea, pain signals, and competitors:
+
+            Idea:
+            {idea}
+
+            Pain:
+            {pain}
+
+            Competitors:
+            {comp}
+
+            Generate 2-3 realistic customer personas.
+
+            Include:
+            - segment
+            - main pain
+            - willingness to pay
+            - why they care
+        """
+
+        result = llm.invoke(prompt).content
+
+        state["personas"] = result
+        return state
+
+    except Exception as e:
+        return add_error(state, f"persona_node: {str(e)}")
+    
+
+### Gap node 
+
+def gap_node(state):
+    try:
+        comp = str(state.get("competitor_analysis", {}))
+
+        from .llm import get_llm
+        llm = get_llm()
+
+        prompt = f"""
+From this competitor analysis:
+
+{comp}
+
+Extract:
+- real market gaps
+- underserved users
+- pricing gaps
+- UX gaps
+"""
+
+        result = llm.invoke(prompt).content
+
+        state["market_gaps"] = result
+        return state
+
+    except Exception as e:
+        return add_error(state, f"gap_node: {str(e)}")
+    
+
+### skeptic node 
+
+def skeptic_node(state):
+    try:
+        idea = state["parsed_idea"]["startup_idea"]
+
+        pain = str(state.get("problem_analysis", {}))
+        pricing = str(state.get("pricing_analysis", {}))
+        comp = str(state.get("competitor_analysis", {}))
+
+        from .llm import get_llm
+        llm = get_llm()
+
+        prompt = f"""
+Act like a harsh investor.
+
+Idea:
+{idea}
+
+Pain:
+{pain}
+
+Pricing:
+{pricing}
+
+Competitors:
+{comp}
+
+List critical risks:
+- why this might fail
+- market risks
+- execution risks
+"""
+
+        result = llm.invoke(prompt).content
+
+        state["skeptic_notes"] = result
+        return state
+
+    except Exception as e:
+        return add_error(state, f"skeptic_node: {str(e)}")
+    
+
+### UVP node
+
+def uvp_node(state):
+    try:
+        idea = state["parsed_idea"]["startup_idea"]
+        gaps = str(state.get("market_gaps", ""))
+        pain = str(state.get("problem_analysis", {}))
+
+        from .llm import get_llm
+        llm = get_llm()
+
+        prompt = f"""
+Create a strong startup UVP.
+
+Idea:
+{idea}
+
+Pain:
+{pain}
+
+Market Gaps:
+{gaps}
+
+Return:
+1 clear powerful positioning statement.
+"""
+
+        result = llm.invoke(prompt).content
+
+        state["uvp"] = result.strip()
+        return state
+
+    except Exception as e:
+        return add_error(state, f"uvp_node: {str(e)}")

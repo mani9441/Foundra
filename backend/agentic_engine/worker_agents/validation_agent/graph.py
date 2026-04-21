@@ -41,85 +41,40 @@ def route_after_judge(state: ValidationState):
 def build_validation_graph():
     graph = StateGraph(ValidationState)
 
-    # --------------------------------------
-    # Register Nodes
-    # --------------------------------------
-
     graph.add_node("intake", intake_node)
+    graph.add_node("research", research_node)
+
     graph.add_node("problem", problem_node)
-    graph.add_node("persona", persona_node)
     graph.add_node("competitor", competitor_node)
     graph.add_node("pricing", pricing_node)
 
+    graph.add_node("persona", persona_node)
     graph.add_node("gap", gap_node)
     graph.add_node("skeptic", skeptic_node)
     graph.add_node("uvp", uvp_node)
+
     graph.add_node("judge", judge_node)
     graph.add_node("report", report_node)
 
-    # --------------------------------------
-    # Start Flow
-    # --------------------------------------
+    # FLOW
 
     graph.add_edge(START, "intake")
-    graph.add_edge("intake", "problem")
+    graph.add_edge("intake", "research")
 
-    # --------------------------------------
-    # Conditional after problem
-    # --------------------------------------
-
-    graph.add_conditional_edges(
-        "problem",
-        route_after_problem,
-        {
-            "persona": "persona",
-            "judge": "judge",
-        }
-    )
-
-    # --------------------------------------
-    # Main Sequential + Parallel Style Chain
-    # --------------------------------------
-
-    # persona -> competitor
-    graph.add_edge("persona", "competitor")
-
-    # competitor -> pricing
+    graph.add_edge("research", "problem")
+    graph.add_edge("problem", "competitor")
     graph.add_edge("competitor", "pricing")
 
-    # pricing -> gap
-    graph.add_edge("pricing", "gap")
-
-    # gap -> skeptic
+    graph.add_edge("pricing", "persona")
+    graph.add_edge("persona", "gap")
     graph.add_edge("gap", "skeptic")
-
-    # skeptic -> uvp
     graph.add_edge("skeptic", "uvp")
-
-    # uvp -> judge
     graph.add_edge("uvp", "judge")
 
-    # --------------------------------------
-    # Judge Routing
-    # --------------------------------------
-
-    graph.add_conditional_edges(
-        "judge",
-        route_after_judge,
-        {
-            "report": "report"
-        }
-    )
-
-    # --------------------------------------
-    # End
-    # --------------------------------------
-
+    graph.add_edge("judge", "report")
     graph.add_edge("report", END)
 
     return graph.compile()
-
-
 # ==========================================
 # EXPORTED APP INSTANCE
 # ==========================================

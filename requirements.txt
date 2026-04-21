@@ -3,3 +3,5 @@ langgraph
 pydantic
 dotenv
 langchain_google_genai
+bs4
+tavily-python
