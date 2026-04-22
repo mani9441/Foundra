@@ -35,10 +35,14 @@ def get_llm():
         )
 
     elif PROVIDER == "ollama":
-        from langchain_community.chat_models import ChatOllama 
+        print("Using Ollama...")
+        
+        from langchain_ollama import ChatOllama 
+        
         return ChatOllama(
             model=MODEL or "llama3",
-            temperature=TEMP
+            temperature=TEMP,
+            base_url="http://127.0.0.1:11434" # Change this as needed
         )
 
     # elif PROVIDER == "groq":
@@ -49,6 +53,17 @@ def get_llm():
     #         model=MODEL or "llama-3.3-70b-versatile",
     #         temperature=TEMP
     #     )
+
+    elif PROVIDER == "groq":
+        from langchain_groq import ChatGroq
+        
+        return ChatGroq(
+            model=MODEL or "llama-3.1-8b-instant",
+            temperature=TEMP,
+            # Optional: custom endpoint if you're using a proxy
+            # base_url="https://api.groq.com/openai/v1", 
+            # api_key="your_api_key_here" # Or set GROQ_API_KEY env var
+        )
 
     else:
         raise ValueError(f"Unsupported provider: {PROVIDER}")

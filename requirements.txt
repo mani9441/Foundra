@@ -5,3 +5,5 @@ dotenv
 langchain_google_genai
 bs4
 tavily-python
+langchain-ollama
+langchain-groq

@@ -233,7 +233,7 @@ def persona_node(state):
         pain = str(state.get("problem_analysis", {}))
         comp = str(state.get("competitor_analysis", {}))
 
-        from .llm import get_llm
+        from ...LLMs.llm import get_llm
         llm = get_llm()
 
         prompt = f"""
@@ -272,7 +272,7 @@ def gap_node(state):
     try:
         comp = str(state.get("competitor_analysis", {}))
 
-        from .llm import get_llm
+        from ...LLMs.llm import get_llm
         llm = get_llm()
 
         prompt = f"""
@@ -306,7 +306,7 @@ def skeptic_node(state):
         pricing = str(state.get("pricing_analysis", {}))
         comp = str(state.get("competitor_analysis", {}))
 
-        from .llm import get_llm
+        from ...LLMs.llm import get_llm
         llm = get_llm()
 
         prompt = f"""
@@ -347,7 +347,7 @@ def uvp_node(state):
         gaps = str(state.get("market_gaps", ""))
         pain = str(state.get("problem_analysis", {}))
 
-        from .llm import get_llm
+        from ...LLMs.llm import get_llm
         llm = get_llm()
 
         prompt = f"""
