@@ -32,9 +32,16 @@ import json
 ########## Phase 2 ############
 
 
-from backend.agentic_engine.worker_agents.phase2_validation.run_phase2_from_phase1 import run_from_phase1_file
+# from backend.agentic_engine.worker_agents.phase2_validation.run_phase2_from_phase1 import run_from_phase1_file
 
 
 
-output = run_from_phase1_file(r"outputs/phase1_result.json")
+# output = run_from_phase1_file(r"outputs/phase1_result.json")
+# print(json.dumps(output, indent=2))
+
+
+from backend.agentic_engine.worker_agents.phase3_market_research.run_phase3_from_phase2 import run_from_phase2_file
+
+
+output = run_from_phase2_file(r"outputs/phase2_result.json")
 print(json.dumps(output, indent=2))
