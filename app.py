@@ -1,3 +1,5 @@
+import json
+
 #from backend.agentic_engine.graph import graph
 
 # result = graph.invoke({
@@ -13,12 +15,26 @@
 
 # print(result["final_report"])
 
-from backend.agentic_engine.worker_agents.phase1_problem_discovery.graph import run_phase1
-import json
 
-founder_idea = input("Enter startup area or idea: ")
+########## Phase 1 ############
 
-result = run_phase1(founder_idea)
+# from backend.agentic_engine.worker_agents.phase1_problem_discovery.graph import run_phase1
 
-print("\n=== FINAL OUTPUT ===\n")
-print(json.dumps(result, indent=2))
+
+# founder_idea = input("Enter startup area or idea: ")
+
+# result = run_phase1(founder_idea)
+
+# print("\n=== FINAL OUTPUT ===\n")
+# print(json.dumps(result, indent=2))
+
+
+########## Phase 2 ############
+
+
+from backend.agentic_engine.worker_agents.phase2_validation.run_phase2_from_phase1 import run_from_phase1_file
+
+
+
+output = run_from_phase1_file(r"outputs/phase1_result.json")
+print(json.dumps(output, indent=2))

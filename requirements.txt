@@ -10,3 +10,10 @@ langchain-groq
 chromadb
 duckduckgo-search
 langchain_tavily
+praw
+requests
+beautifulsoup4
+pytrends
+python-whois
+urllib3
+duckduckgo_search
