@@ -13,3 +13,12 @@
 
 # print(result["final_report"])
 
+from backend.agentic_engine.worker_agents.phase1_problem_discovery.graph import run_phase1
+import json
+
+founder_idea = input("Enter startup area or idea: ")
+
+result = run_phase1(founder_idea)
+
+print("\n=== FINAL OUTPUT ===\n")
+print(json.dumps(result, indent=2))

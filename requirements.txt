@@ -7,3 +7,6 @@ bs4
 tavily-python
 langchain-ollama
 langchain-groq
+chromadb
+duckduckgo-search
+langchain_tavily
