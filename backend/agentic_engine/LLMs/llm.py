@@ -44,15 +44,20 @@ def get_llm():
             temperature=TEMP,
             base_url="http://127.0.0.1:11434" # Change this as needed
         )
+    
 
-    # elif PROVIDER == "groq":
-    #     from langchain_openai import ChatOpenAI 
-    #     return ChatOpenAI(
-    #         base_url="https://api.groq.com/openai/v1",
-    #         api_key=os.getenv("GROQ_API_KEY"),
-    #         model=MODEL or "llama-3.3-70b-versatile",
-    #         temperature=TEMP
-    #     )
+
+    elif PROVIDER == "ollama_remote":
+
+        from ..LLMs.RemoteOllamaLLM import RemoteOllama
+
+        return RemoteOllama(
+            model=MODEL or "phi3",
+            temperature=TEMP,
+            base_url="http://172.23.105.40:8000",
+            verbose_stream=True
+        )
+
 
     elif PROVIDER == "groq":
         from langchain_groq import ChatGroq

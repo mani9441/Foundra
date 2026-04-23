@@ -2,7 +2,7 @@ from langchain.tools import tool
 from langchain_community.tools.tavily_search import TavilySearchResults
 import requests
 from bs4 import BeautifulSoup
-from ...worker_agents.validation_agent.llm import get_llm
+from ...LLMs.llm import get_llm
 
 #### web search tool
 search = TavilySearchResults(k=5)
