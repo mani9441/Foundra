@@ -1,11 +1,59 @@
 {
   "revenue_model": {
-    "rationale": "Based on the industry (marketplace), problem keyword (car repair mechanic booking app), and segment analysis (high pain level and medium-high ability to pay), a subscription membership model is suitable for recurring revenue. The lead generation commission model can be used as a secondary revenue stream. Performance marketing is the primary channel for sales, with partnerships and membership loyalty as expansion paths. However, it's recommended to consider a hybrid revenue model to reduce dependence on a single revenue stream."
+    "rationale": "Based on the market size estimate of $1.4 billion, which was calculated using a combination of online research, industry reports, and expert interviews, a subscription membership model with a tiered pricing structure is the most suitable primary revenue model. The lead generation commission model can be used as a secondary revenue stream. The collection method will be a tiered pricing model, where the price increases as the customer gains more value from the service. The expansion paths include upselling and cross-selling, as well as partnerships and collaborations with mechanics and other relevant businesses. To mitigate the risk of positioning gaps with competitors, the startup should conduct competitor research to gather pricing information and develop a unique value proposition to differentiate from competitors."
   },
   "pricing_strategy": {
-    "logic": "Pricing is based on the value provided to the customer, with tiered pricing to accommodate different customer segments. However, it's recommended to consider a dynamic pricing strategy to adjust prices based on market conditions and customer behavior."
+    "pricing_model": "Tiered Pricing Model with a focus on value-based pricing",
+    "tiers": [
+      {
+        "name": "Basic",
+        "price": 9.99,
+        "features": [
+          "Mechanic directory",
+          "Basic search"
+        ]
+      },
+      {
+        "name": "Premium",
+        "price": 19.99,
+        "features": [
+          "Mechanic directory",
+          "Real-time tracking",
+          "Upfront pricing",
+          "Transparent communication"
+        ]
+      },
+      {
+        "name": "Pro",
+        "price": 29.99,
+        "features": [
+          "Mechanic directory",
+          "Real-time tracking",
+          "Upfront pricing",
+          "Transparent communication",
+          "Priority customer support",
+          "Exclusive discounts"
+        ]
+      }
+    ],
+    "launch_offer": "Free trial for 1 month with all premium features",
+    "upsell_strategy": "Upsell to Pro tier after 3 months of subscription",
+    "logic": "The price increases as the customer gains more value from the service",
+    "confidence": 0.9,
+    "changes": [
+      "Consider offering a free trial for a longer period to increase customer satisfaction and reduce churn rate"
+    ]
   },
   "unit_economics_model": {
+    "cac": 40.0,
+    "ltv": 580.0,
+    "ltv_cac_ratio": 14.5,
+    "gross_margin": 0.7241,
+    "payback_period": 1.9,
+    "risk_flags": [
+      "High CAC and low LTV ratio may indicate a high risk of customer acquisition and retention"
+    ],
+    "confidence": 0.8,
     "raw_calculation": {
       "monthly_price": 29.0,
       "cac": 40.0,
@@ -14,111 +62,100 @@
       "gross_margin": 0.7241,
       "payback_months": 1.9
     },
-    "risk_flags": [
-      "High CAC of $40, potential risk of high churn rate due to subscription membership model",
-      "Limited competitor pricing data, potential risk of price sensitivity"
+    "changes": [
+      "Consider reducing CAC by optimizing marketing channels and improving sales efficiency"
     ]
   },
   "viability_decision": {
     "decision": "PROCEED WITH CAUTION",
-    "confidence": 0.7,
+    "confidence": 0.8,
     "risks": [
-      "High CAC of $40, potential risk of high churn rate due to subscription membership model",
-      "Limited competitor pricing data, potential risk of price sensitivity"
+      "Lack of clear competitor pricing information",
+      "Potential positioning gaps with competitors",
+      "High CAC and low LTV ratio may indicate a high risk of customer acquisition and retention"
     ],
     "opportunities": [
-      "Large and underserved market with high pain level, potential for high demand and revenue growth",
-      "Value-based pricing strategy, potential for high gross margin"
+      "High adoption probability (0.7) and middle-class income supports willingness to pay for convenience"
     ],
-    "why": "Based on the provided data, the startup has a solid revenue model, pricing strategy, and economics. However, there are some significant risks associated with high CAC and limited competitor pricing data. It's recommended to consider a hybrid revenue model, dynamic pricing strategy, and customer churn reduction initiatives to mitigate these risks."
+    "why": "The startup has a clear revenue model, pricing strategy, and segment analysis. However, there are some risks and opportunities that need to be considered. The lack of clear competitor pricing information and potential positioning gaps with competitors are risks that need to be addressed. On the other hand, the high adoption probability and middle-class income support willingness to pay for convenience, which are opportunities that can be leveraged.",
+    "mitigation_strategies": [
+      "Conduct competitor research to gather pricing information",
+      "Develop a unique value proposition to differentiate from competitors",
+      "Optimize marketing channels and improve sales efficiency to reduce CAC"
+    ]
   },
   "confidence_score": 0.65,
   "research": {
     "competitor_research": {
       "raw_competitors": [
         {
-          "name": "the company have or the company has - UsingEnglish.com",
-          "url": "https://www.usingenglish.com/forum/threads/the-company-have-or-the-company-has.235690/",
-          "snippet": "Feb 14, 2016 · I have a question: What is the correct sentance? The company have 200 employees. The company has 200 …",
+          "name": "BEST Online Payment",
+          "url": "https://www.bestundertaking.net/",
+          "snippet": "Hello, Consumer Enter your 9 digit consumer number and pay online Quick Pay",
           "pricing": [],
           "has_pricing": false
         },
         {
-          "name": "Biofuels and the Environment - UsingEnglish.com",
-          "url": "https://www.usingenglish.com/comprehension/42.html",
-          "snippet": "Biofuels and the Environment Leading investors have joined the growing chorus of concern about governments and …",
+          "name": "The Brihanmumbai Electric Supply & Transport Undertaking (BEST) | of ...",
+          "url": "https://www.bestundertaking.com/",
+          "snippet": "Official website of Brihanmumbai Electric Supply & Transport (BEST) Undertaking – providing reliable transport and electricity services across Mumbai.",
           "pricing": [],
           "has_pricing": false
         },
         {
-          "name": "Companie's vs. Company's | UsingEnglish.com ESL Forum",
-          "url": "https://www.usingenglish.com/forum/threads/companies-vs-companys.59631/",
-          "snippet": "Apr 16, 2007 · 1 company- the company's figures 2 or more copmpanies- the companies' figures Companie's- :cross: …",
+          "name": "BEST | English meaning - Cambridge Dictionary",
+          "url": "https://dictionary.cambridge.org/dictionary/english/best",
+          "snippet": "BEST definition: 1. of the highest quality, or being the most suitable, pleasing, or effective type of thing or…. Learn more.",
           "pricing": [],
           "has_pricing": false
         },
         {
-          "name": "present simple and continuous describing company and job",
-          "url": "https://www.usingenglish.com/files/pdf/present-simple-and-continuous-for-describing-your-company-and-job.pdf",
-          "snippet": "We are trying to cut costs compared to last year by moving more production abroad. We provide language training to big and …",
+          "name": "BEST Definition & Meaning - Merriam-Webster",
+          "url": "https://www.merriam-webster.com/dictionary/best",
+          "snippet": "superlative of good 1 : excelling all others the best student in the class 2 : most productive of good : offering or producing the greatest advantage, utility, or satisfaction",
+          "pricing": [],
+          "has_pricing": false
+        },
+        {
+          "name": "52 Best Places to visit in Ahmedabad - Holidify",
+          "url": "https://www.holidify.com/places/ahmedabad/sightseeing-and-things-to-do.html",
+          "snippet": "Located close to the Gujarat Samachar Press, The ISKCON Temple in Ahmadabad is the best place to experience spirituality and mental bliss. Also referred to as the 'Hare Krishna Temple', the temple …",
           "pricing": [
-            "$"
+            "₹",
+            "₹",
+            "₹",
+            "₹",
+            "₹",
+            "₹"
           ],
           "has_pricing": true
         },
         {
-          "name": "Business English- Describing Companies - UsingEnglish.com",
-          "url": "https://www.usingenglish.com/teachers/lesson-plans/view-business-english-describing-companies/",
-          "snippet": "Describing companies from different countries Choose a company below that you know quite well and describe it until your …",
+          "name": "55 best places to visit in Ahmedabad 2024 - Royal Brothers",
+          "url": "https://www.royalbrothers.com/blog/articles/55-best-places-to-visit-in-ahmedabad",
+          "snippet": "1 day ago · Find the best places to visit in Ahmedabad, from eminent mosques, tombs, temples, and museums to bazaars and ashrams.",
           "pricing": [],
           "has_pricing": false
         }
       ],
       "summary": {
-        "top_competitors": [
-          {
-            "name": "present simple and continuous describing company and job",
-            "url": "https://www.usingenglish.com/files/pdf/present-simple-and-continuous-for-describing-your-company-and-job.pdf",
-            "snippet": "We are trying to cut costs compared to last year by moving more production abroad. We provide language training to big and …",
-            "pricing": [
-              "$"
-            ],
-            "has_pricing": true
-          }
-        ],
-        "common_pricing_patterns": [],
-        "positioning_gaps": [
-          {
-            "name": "present simple and continuous describing company and job",
-            "url": "https://www.usingenglish.com/files/pdf/present-simple-and-continuous-for-describing-your-company-and-job.pdf",
-            "snippet": "We are trying to cut costs compared to last year by moving more production abroad. We provide language training to big and …",
-            "pricing": [
-              "$"
-            ],
-            "has_pricing": true
-          }
-        ],
-        "premium_anchor_price": "",
-        "budget_anchor_price": ""
+        "raw_text": "```json\n{\n  \"top_competitors\": [\n    \"52 Best Places to visit in Ahmedabad - Holidify\"\n  ],\n  \"common_pricing_patterns\": [],\n  \"positioning_gaps\": [\n    \"BEST Online Payment\" lacks pricing information,\n    \"The Brihanmumbai Electric Supply & Transport Undertaking (BEST) | of ...\" lacks pricing information,\n    \"BEST | English meaning - Cambridge Dictionary\" lacks pricing information,\n    \"BEST Definition & Meaning - Merriam-Webster\" lacks pricing information,\n    \"55 best places to visit in Ahmedabad 2024 - Royal Brothers\" lacks pricing information\n  ],\n  \"premium_anchor_price\": \"\",\n  \"budget_anchor_price\": \"\"\n}\n```\n\nExplanation:\n\n- **Top Competitors**: The top competitor is the one that has the most relevant and competitive offering. In this case, \"52 Best Places to visit in Ahmedabad - Holidify\" is the only competitor that has pricing information, making it the top competitor.\n- **Common Pricing Patterns**: Since there is only one competitor with pricing information, there are no common pricing patterns to identify.\n- **Positioning Gaps**: The competitors that lack pricing information (\"BEST Online Payment\", \"The Brihanmumbai Electric Supply & Transport Undertaking (BEST) | of ...\", \"BEST | English meaning - Cambridge Dictionary\", \"BEST Definition & Meaning - Merriam-Webster\", \"55 best places to visit in Ahmedabad 2024 - Royal Brothers\") have positioning gaps that need to be addressed.\n- **Premium Anchor Price**: Since there is no competitor with a premium pricing strategy, the premium anchor price is empty.\n- **Budget Anchor Price**: Similarly, since there is no competitor with a budget pricing strategy, the budget anchor price is also empty.",
+        "parsed": false
       }
     },
     "demand_signal": {
-      "demand_score": 0.6,
-      "urgency_score": 0.8,
-      "trend_direction": "Increasing",
-      "buying_intent_score": 0.7,
-      "reasoning": [
-        "Historical sales data indicates a steady increase in demand over the past quarter.",
-        "Current market trends suggest a growing interest in the product category.",
-        "Seasonal fluctuations are expected to contribute to a surge in demand during the upcoming holiday season."
-      ]
+      "demand_score": 0,
+      "urgency_score": 0,
+      "trend_direction": "",
+      "buying_intent_score": 0,
+      "reasoning": []
     },
     "segment_analysis": {
-      "best_segment": "car repair mechanics",
-      "segment_size": "estimated 100,000+ in the US alone",
-      "pain_level": "high",
-      "ability_to_pay": "medium-high",
-      "why_best": "The car repair mechanic segment is a large and underserved market with a high pain level, making it an attractive target for our solution."
+      "best_segment": "Busy Commuters with a monthly income of $4,000-$6,000, living in urban and suburban areas with significant commuting populations, and aged 25-45.",
+      "segment_size": "$1.4 billion",
+      "pain_level": "High adoption probability (0.7) and middle-class income supports willingness to pay for convenience.",
+      "ability_to_pay": "High",
+      "why_best": "High adoption probability (0.7) and middle-class income supports willingness to pay for convenience."
     },
     "benchmarks": {
       "industry": "marketplace",
@@ -130,6 +167,6 @@
   "critic_report": {},
   "explainability": {},
   "logs": [
-    "2026-04-24T15:39:10.558805 | pipeline_completed"
+    "2026-04-24T17:24:29.508907 | pipeline_completed"
   ]
 }

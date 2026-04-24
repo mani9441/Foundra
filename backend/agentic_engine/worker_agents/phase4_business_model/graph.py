@@ -71,11 +71,11 @@ def save_output_node(state):
         "logs": state.get("logs", [])
     }
 
-    with open("outputs/phase3_result.json", "w", encoding="utf-8") as f:
+    with open("outputs/phase4_result.json", "w", encoding="utf-8") as f:
         json.dump(clean_json(payload), f, indent=2, ensure_ascii=False)
 
     return {
-        "saved_file": "outputs/phase3_result.json"
+        "saved_file": "outputs/phase4_result.json"
     }
 
 
