@@ -49,7 +49,13 @@ import json
 
 ########### Phase 4 ###########
 
-from backend.agentic_engine.worker_agents.phase4_business_model.run_phase4_from_phase3 import run_from_phase3_file
+# from backend.agentic_engine.worker_agents.phase4_business_model.run_phase4_from_phase3 import run_from_phase3_file
 
-run_from_phase3_file(r"outputs/phase2_result.json")
+# run_from_phase3_file(r"outputs/phase3_result.json")
+
+########### Phase 5 ################
+
+from backend.agentic_engine.worker_agents.phase5_product_strategy.run_phase5_from_phase4 import run_from_phase4_file
+
+run_from_phase4_file(r"outputs/phase4_result.json")
 
