@@ -39,9 +39,17 @@ import json
 # output = run_from_phase1_file(r"outputs/phase1_result.json")
 # print(json.dumps(output, indent=2))
 
+########### Phase 3 ############
 
-from backend.agentic_engine.worker_agents.phase3_market_research.run_phase3_from_phase2 import run_from_phase2_file
+# from backend.agentic_engine.worker_agents.phase3_market_research.run_phase3_from_phase2 import run_from_phase2_file
 
 
-output = run_from_phase2_file(r"outputs/phase2_result.json")
-print(json.dumps(output, indent=2))
+# output = run_from_phase2_file(r"outputs/phase2_result.json")
+# print(json.dumps(output, indent=2))
+
+########### Phase 4 ###########
+
+from backend.agentic_engine.worker_agents.phase4_business_model.run_phase4_from_phase3 import run_from_phase3_file
+
+run_from_phase3_file(r"outputs/phase2_result.json")
+
