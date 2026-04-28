@@ -17,3 +17,8 @@ pytrends
 python-whois
 urllib3
 duckduckgo_search
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+supabase

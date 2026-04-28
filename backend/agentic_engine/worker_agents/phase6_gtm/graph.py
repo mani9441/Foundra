@@ -51,7 +51,7 @@ def save_output_node(state):
     Final save node
     """
 
-    os.makedirs("outputs", exist_ok=True)
+  
 
     payload = {
         "launch_plan": state.get(
@@ -77,8 +77,10 @@ def save_output_node(state):
         }
     }
 
+    filename = state["filename"]
+
     with open(
-        "outputs/phase6_result.json",
+       filename,
         "w",
         encoding="utf-8"
     ) as f:
@@ -90,7 +92,7 @@ def save_output_node(state):
         )
 
     return {
-        "saved_file": "outputs/phase6_result.json"
+        "saved_file": filename
     }
 
 
@@ -184,13 +186,13 @@ builder.add_edge(
 # final save
 builder.add_edge(
     "synthesis",
-    "save_output"
-)
-
-builder.add_edge(
-    "save_output",
     END
 )
+
+# builder.add_edge(
+#     "save_output",
+#     END
+# )
 
 # Compile
 graph = builder.compile()

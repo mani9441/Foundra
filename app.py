@@ -61,6 +61,17 @@ import json
 
 ########## Phase 6 ################
 
-from backend.agentic_engine.worker_agents.phase6_gtm.run_phase6_from_phase5 import run_from_phase5_file
+# from backend.agentic_engine.worker_agents.phase6_gtm.run_phase6_from_phase5 import run_from_phase5_file
 
-run_from_phase5_file(r"outputs/phase5_result.json")
+# run_from_phase5_file(r"outputs/phase5_result.json")
+
+############ phase 1 to API format ############
+
+from backend.agentic_engine.bridge.discovery2api import generate_phase_discovery
+
+with open("outputs/phase1_result.json", "r", encoding="utf-8") as f:
+    content = f.read()
+
+result = generate_phase_discovery(content)
+
+print(json.dumps(result, indent=2))

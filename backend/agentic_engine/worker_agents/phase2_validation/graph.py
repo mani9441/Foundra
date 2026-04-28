@@ -72,24 +72,18 @@ def node_finalize(state: ValidationState) -> ValidationState:
         "decision": state.get("proceed_pivot_reject", {}),
     }
 
-    # ensure folder exists
-    os.makedirs("outputs", exist_ok=True)
+    # filename = state["filename"]
 
-    file_path = os.path.join(
-        "outputs",
-        "phase2_result.json"
-    )
+    # with open(filename, "w", encoding="utf-8") as f:
+    #     json.dump(
+    #         final_json,
+    #         f,
+    #         indent=2,
+    #         ensure_ascii=False
+    #     )
 
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(
-            final_json,
-            f,
-            indent=2,
-            ensure_ascii=False
-        )
-
-    state["final_json"] = final_json
-    state["saved_file"] = file_path
+    # state["final_json"] = final_json
+    # state["saved_file"] = filename
 
     return state
 
@@ -165,20 +159,19 @@ def run_phase2(inputs: Dict[str, Any]) -> Dict[str, Any]:
             "final_json key missing. Fallback response used."
     }
 
-    # also save file again for safety
-    os.makedirs("outputs", exist_ok=True)
+    # filename = inputs["filename"]
 
-    with open(
-        os.path.join("outputs", "phase2_result.json"),
-        "w",
-        encoding="utf-8"
-    ) as f:
-        json.dump(
-            final_json,
-            f,
-            indent=2,
-            ensure_ascii=False
-        )
+    # with open(
+    #     filename,
+    #     "w",
+    #     encoding="utf-8"
+    # ) as f:
+    #     json.dump(
+    #         final_json,
+    #         f,
+    #         indent=2,
+    #         ensure_ascii=False
+    #     )
 
     return final_json
 

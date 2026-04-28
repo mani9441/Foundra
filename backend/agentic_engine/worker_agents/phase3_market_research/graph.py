@@ -23,7 +23,6 @@ def save_results_node(state: MarketResearchState):
     Save final Phase 3 outputs to outputs/phase3_result.json
     """
 
-    os.makedirs("outputs", exist_ok=True)
 
     final_payload = {
         "tam_sam_som": state.get("tam_sam_som", {}),
@@ -36,14 +35,16 @@ def save_results_node(state: MarketResearchState):
         "final_decision": state.get("final_decision", {})
     }
 
+    filename = state["filename"]
+
     with open(
-        "outputs/phase3_result.json",
+        filename,
         "w",
         encoding="utf-8"
     ) as f:
         json.dump(final_payload, f, indent=4, ensure_ascii=False)
 
-    print("Saved: outputs/phase3_result.json")
+    print(f"Saved: {filename}")
 
     return state
 
@@ -67,7 +68,7 @@ def build_market_graph():
     graph.add_edge("niche", "pricing")
     graph.add_edge("pricing", "differentiate")
     graph.add_edge("differentiate", "verdict")
-    graph.add_edge("verdict", "save")
-    graph.add_edge("save", END)
+    graph.add_edge("verdict", END)
+    #graph.add_edge("save", END)
 
     return graph.compile()

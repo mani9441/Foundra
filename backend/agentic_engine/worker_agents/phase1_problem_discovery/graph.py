@@ -102,10 +102,10 @@ def build_graph():
 # SAVE OUTPUT
 # -------------------------
 
-def save_output(result):
+def save_output(result,filename):
     os.makedirs("outputs", exist_ok=True)
 
-    with open("outputs/phase1_result.json", "w") as f:
+    with open(filename, "w") as f:
         json.dump(result, f, indent=2)
 
 
@@ -130,7 +130,7 @@ def run_phase1(founder_input: str):
 
     result = app.invoke(initial_state)
 
-    save_output(result)
+    #save_output(result,filename)
 
     return result
 

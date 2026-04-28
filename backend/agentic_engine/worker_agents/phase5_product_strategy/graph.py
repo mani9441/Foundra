@@ -48,7 +48,7 @@ def save_output_node(state):
     Final save node
     """
 
-    os.makedirs("outputs", exist_ok=True)
+   
 
     payload = {
         "mvp_scope": state.get("mvp_scope", {}),
@@ -72,8 +72,10 @@ def save_output_node(state):
         }
     }
 
+    filename = state["filename"]
+
     with open(
-        "outputs/phase5_result.json",
+        filename,
         "w",
         encoding="utf-8"
     ) as f:
@@ -85,7 +87,7 @@ def save_output_node(state):
         )
 
     return {
-        "saved_file": "outputs/phase5_result.json"
+        "saved_file": filename
     }
 
 
@@ -173,12 +175,12 @@ def build_phase5_graph():
 
     graph.add_edge(
         "build_spec",
-        "save_output"
-    )
-
-    graph.add_edge(
-        "save_output",
         END
     )
+
+    # graph.add_edge(
+    #     "save_output",
+    #     END
+    # )
 
     return graph.compile()

@@ -57,7 +57,6 @@ def clean_json(obj):
 
 
 def save_output_node(state):
-    os.makedirs("outputs", exist_ok=True)
 
     payload = {
         "revenue_model": state.get("revenue_model", {}),
@@ -71,11 +70,13 @@ def save_output_node(state):
         "logs": state.get("logs", [])
     }
 
-    with open("outputs/phase4_result.json", "w", encoding="utf-8") as f:
+    filename = state["filename"]
+
+    with open(filename, "w", encoding="utf-8") as f:
         json.dump(clean_json(payload), f, indent=2, ensure_ascii=False)
 
     return {
-        "saved_file": "outputs/phase4_result.json"
+        "saved_file": f"{filename}  "
     }
 
 
@@ -135,7 +136,7 @@ def build_graph():
     # Final Flow
     graph.add_edge("confidence", "explainability")
     graph.add_edge("explainability", "logger")
-    graph.add_edge("logger", "save_output")
-    graph.add_edge("save_output", END)
+    graph.add_edge("logger", END)
+    #graph.add_edge("save_output", END)
 
     return graph.compile()
