@@ -69,6 +69,28 @@ def get_llm():
             # base_url="https://api.groq.com/openai/v1", 
             # api_key="your_api_key_here" # Or set GROQ_API_KEY env var
         )
+    
+    elif PROVIDER == "github":
+        """
+        GitHub Models via Azure OpenAI-compatible endpoint
+        Need:
+        GITHUB_TOKEN=your_pat_token
+        """
+
+        from langchain_openai import ChatOpenAI
+
+        github_token = os.getenv("GITHUB_TOKEN")
+
+        if not github_token:
+            raise ValueError("GITHUB_TOKEN not found in .env")
+
+        return ChatOpenAI(
+            model=MODEL or "gpt-4o-mini",
+            temperature=TEMP,
+            api_key=github_token,
+            base_url="https://models.github.ai/inference"
+        )
+
 
     else:
         raise ValueError(f"Unsupported provider: {PROVIDER}")

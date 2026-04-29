@@ -22,3 +22,4 @@ uvicorn
 sqlalchemy
 psycopg2-binary
 supabase
+langchain_openai
