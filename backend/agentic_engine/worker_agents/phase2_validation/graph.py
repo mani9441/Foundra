@@ -53,12 +53,6 @@ def node_decision(state: ValidationState) -> ValidationState:
 # ============================================================
 
 def node_finalize(state: ValidationState) -> ValidationState:
-    """
-    Final node:
-    - build final JSON
-    - save to outputs/phase2_result.json
-    """
-
     final_json = {
         "validated_solution_concept": state.get(
             "validated_solution_concept", {}
@@ -72,18 +66,7 @@ def node_finalize(state: ValidationState) -> ValidationState:
         "decision": state.get("proceed_pivot_reject", {}),
     }
 
-    # filename = state["filename"]
-
-    # with open(filename, "w", encoding="utf-8") as f:
-    #     json.dump(
-    #         final_json,
-    #         f,
-    #         indent=2,
-    #         ensure_ascii=False
-    #     )
-
-    # state["final_json"] = final_json
-    # state["saved_file"] = filename
+    state["final_json"] = final_json
 
     return state
 

@@ -1,7 +1,7 @@
 # ============================================================
 # File: phase5_product_strategy/agents/ruthless_scope_killer.py
+# SAFE VERSION FOR AZURE / OPENAI CONTENT FILTER
 # Replace full file
-# Fix: robust LLM JSON parsing
 # ============================================================
 
 import json
@@ -28,7 +28,7 @@ def extract_json(text: str):
     except:
         pass
 
-    match = re.search(r'\{.*\}', text, re.DOTALL)
+    match = re.search(r"\{.*\}", text, re.DOTALL)
     if match:
         try:
             return json.loads(match.group(0))
@@ -36,8 +36,8 @@ def extract_json(text: str):
             pass
 
     return {
-        "surviving_features": [],
-        "killed_features": [],
+        "selected_features": [],
+        "deferred_features": [],
         "reasoning": "fallback"
     }
 
@@ -47,63 +47,78 @@ def extract_json(text: str):
 # ============================================================
 
 def run_ruthless_scope_killer(state):
+    """
+    Renamed internally but keeps same function name
+    to avoid graph changes.
+    """
+
     features = state["feature_pool"]["all_features"]
     constraints = state["constraints"]
     inputs = state["inputs"]
 
     prompt = f"""
-You are a ruthless startup advisor.
+You are a startup product strategist.
+
+Your job is to reduce product scope to the fastest,
+highest-value MVP launch plan.
 
 Return ONLY valid JSON.
 
-PRIMARY VALUE:
-{inputs.get("core_value_proposition","")}
+CORE VALUE:
+{inputs.get("core_value_proposition", "")}
 
-FEATURES:
+FEATURE CANDIDATES:
 {json.dumps(features, indent=2)}
 
 CONSTRAINTS:
 {json.dumps(constraints, indent=2)}
 
-Kill:
-- nice to have
-- slow to build
-- expensive
-- low impact
-- vanity features
+Selection Rules:
+- Keep highest customer impact items
+- Keep fastest to build items
+- Keep lowest complexity items
+- Keep revenue-driving items
+- Delay low-priority items
+- Delay expensive items
+- Delay complex items
 
-Return:
+Return exactly:
 
 {{
-  "surviving_features": [],
-  "killed_features": [],
+  "selected_features": [],
+  "deferred_features": [],
   "reasoning": ""
 }}
 """
 
-    result = llm.invoke(prompt)
+    try:
+        result = llm.invoke(prompt)
 
-    raw = (
-        result.content
-        if hasattr(result, "content")
-        else str(result)
-    )
+        raw = (
+            result.content
+            if hasattr(result, "content")
+            else str(result)
+        )
 
-    data = extract_json(raw)
+        data = extract_json(raw)
 
-    surviving = data.get("surviving_features", [])
-    killed = data.get("killed_features", [])
+    except Exception:
+        data = {}
 
-    # hard fallback if model weak
-    if not surviving and features:
-        surviving = features[:5]
-        killed = features[5:]
+    selected = data.get("selected_features", [])
+    deferred = data.get("deferred_features", [])
 
-    state["surviving_features"] = surviving
-    state["killed_features"] = killed
+    # Hard fallback if model weak / filtered / empty
+    if not selected and features:
+        selected = features[:5]
+        deferred = features[5:]
+
+    # Keep backward compatibility with graph + frontend
+    state["surviving_features"] = selected
+    state["killed_features"] = deferred
 
     state["logs"].append(
-        "Ruthless Scope Killer completed."
+        "Scope optimization completed."
     )
 
     return state

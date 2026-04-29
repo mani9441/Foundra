@@ -1,16 +1,14 @@
 # ============================================================
-# LangChain Agent for BusinessModelPage
-# Input File: business_model.json
-# Output: businessData (frontend-ready)
+# FILE: backend/agentic_engine/bridge/business2api.py
+# FIXED + PRODUCTION SAFE VERSION
 # ============================================================
-
-# pip install langchain langchain-openai pydantic python-dotenv
 
 import os
 import json
+import re
 from dotenv import load_dotenv
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from langchain_classic.prompts import ChatPromptTemplate
 from langchain_classic.output_parsers import PydanticOutputParser
 from langchain_classic.chains import LLMChain
@@ -18,7 +16,7 @@ from langchain_classic.chains import LLMChain
 load_dotenv()
 
 # ============================================================
-# 1. LLM
+# LLM
 # ============================================================
 
 from backend.agentic_engine.LLMs.llm import get_llm
@@ -26,23 +24,25 @@ from backend.agentic_engine.LLMs.llm import get_llm
 llm = get_llm()
 
 # ============================================================
-# 2. Schema
+# SCHEMA
 # ============================================================
 
 class PricingTier(BaseModel):
     name: str
     price: float
 
+
 class MarginRow(BaseModel):
     month: str
     margin: float
+
 
 class EconomicItem(BaseModel):
     label: str
     value: str
 
-class BusinessOutput(BaseModel):
 
+class BusinessOutput(BaseModel):
     description: str
     readiness: int
 
@@ -61,39 +61,44 @@ class BusinessOutput(BaseModel):
 parser = PydanticOutputParser(pydantic_object=BusinessOutput)
 
 # ============================================================
-# 3. Prompt
+# PROMPT
 # ============================================================
 
 prompt = ChatPromptTemplate.from_template("""
 You are a startup monetization strategist.
 
 Analyze the startup business model content and return ONLY
-frontend-ready variables for a Business Model dashboard.
+valid JSON object matching required format.
+
+STRICT RULES:
+
+1. Return ONLY raw JSON.
+2. Do NOT return markdown.
+3. Do NOT return schema.
+4. Do NOT wrap response inside "data".
+5. No explanation.
 
 Rules:
 
-1. description = concise revenue model summary.
-2. readiness = 0-100 monetization readiness score.
+description = concise revenue model summary.
+readiness = score from 0 to 100.
 
-3. pricing tiers must include exactly:
+pricing tiers must include EXACTLY:
 - Basic
 - Premium
 - Pro
 
-Use realistic prices.
+Margins must contain EXACTLY:
+- M1
+- M2
+- M3
+- M4
 
-4. margin forecast must contain exactly:
-M1, M2, M3, M4
-
-Margins are percentages.
-
-5. unit economics must include exactly:
+Economics must contain EXACTLY:
 - CAC
 - LTV
 - LTV:CAC
 - Payback
-
-6. Footer = investor-grade insight.
 
 {format_instructions}
 
@@ -107,7 +112,56 @@ chain = LLMChain(
 )
 
 # ============================================================
-# 4. Main Function
+# UNIVERSAL SAFE PARSER
+# ============================================================
+
+def extract_json(raw: str):
+    """
+    Extract first valid JSON object from model response
+    """
+    raw = raw.strip()
+
+    # direct parse
+    try:
+        return json.loads(raw)
+    except:
+        pass
+
+    # extract json block
+    match = re.search(r"\{.*\}", raw, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group())
+        except:
+            pass
+
+    raise ValueError("No valid JSON found in model output")
+
+
+def safe_parse(raw: str) -> BusinessOutput:
+    """
+    Handles:
+    1. normal JSON
+    2. wrapped {"data": {...}}
+    3. schema + data
+    4. parser fallback
+    """
+
+    try:
+        data = extract_json(raw)
+
+        # if wrapped inside data
+        if "data" in data and isinstance(data["data"], dict):
+            data = data["data"]
+
+        return BusinessOutput.model_validate(data)
+
+    except Exception:
+        # final fallback
+        return parser.parse(raw)
+
+# ============================================================
+# MAIN FUNCTION
 # ============================================================
 
 def generate_business_model(content: str):
@@ -117,7 +171,7 @@ def generate_business_model(content: str):
         format_instructions=parser.get_format_instructions()
     )
 
-    structured = parser.parse(raw)
+    structured = safe_parse(raw)
 
     frontend = {
         "description": structured.description,
@@ -125,17 +179,17 @@ def generate_business_model(content: str):
 
         "pricing": {
             "title": structured.pricing_title,
-            "tiers": [t.dict() for t in structured.pricing_tiers]
+            "tiers": [t.model_dump() for t in structured.pricing_tiers]
         },
 
         "margins": {
             "title": structured.margins_title,
-            "data": [m.dict() for m in structured.margins_data]
+            "data": [m.model_dump() for m in structured.margins_data]
         },
 
         "economics": {
             "title": structured.economics_title,
-            "items": [i.dict() for i in structured.economics_items]
+            "items": [i.model_dump() for i in structured.economics_items]
         },
 
         "footer": {
@@ -144,14 +198,3 @@ def generate_business_model(content: str):
     }
 
     return frontend
-
-# ============================================================
-# 5. Load File
-# ============================================================
-
-# with open("business_model.json", "r", encoding="utf-8") as f:
-#     content = f.read()
-
-# result = generate_business_model(content)
-
-# print(json.dumps(result, indent=2))

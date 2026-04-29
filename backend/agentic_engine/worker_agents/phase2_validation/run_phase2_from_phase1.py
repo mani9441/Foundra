@@ -127,6 +127,8 @@ def run_from_phase1_file(file_path: str):
 
     print(json.dumps(result, indent=2, ensure_ascii=False))
 
+    return result
+
 
 # ============================================================
 # CLI
