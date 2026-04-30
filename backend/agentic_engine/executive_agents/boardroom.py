@@ -125,19 +125,19 @@ initial_input = {
     "final_decision": ""
 }
 
-from backend.agentic_engine.executive_agents.boardroom import startup_engine
-# 2. Run the Graph
-# We use .invoke() for a final result, or .stream() to see the debate live
-print("--- BOARD MEETING STARTING ---\n")
+# from backend.agentic_engine.executive_agents.boardroom import startup_engine
+# # 2. Run the Graph
+# # We use .invoke() for a final result, or .stream() to see the debate live
+# print("--- BOARD MEETING STARTING ---\n")
 
-result = startup_engine.invoke(initial_input)
+# result = startup_engine.invoke(initial_input)
 
-# 3. Display the Transcript (The "Real" Debate)
-print("## MEETING TRANSCRIPT ##")
-for message in result['history']:
-    # Each message is a HumanMessage object added during the graph run
-    print(f"\n{message.content}")
+# # 3. Display the Transcript (The "Real" Debate)
+# print("## MEETING TRANSCRIPT ##")
+# for message in result['history']:
+#     # Each message is a HumanMessage object added during the graph run
+#     print(f"\n{message.content}")
 
-print("\n" + "="*30)
-print("## FINAL EXECUTIVE DECREE ##")
-print(result['final_decision'])
+# print("\n" + "="*30)
+# print("## FINAL EXECUTIVE DECREE ##")
+# print(result['final_decision'])

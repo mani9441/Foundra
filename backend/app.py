@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from .routes.health import router as health_router
 from .routes.projects import router as projects_router
 from .routes.phases import router as phases_router
+from .routes.boardroom import router as boardroom
 
 
 # Define the lifespan logic
@@ -88,7 +89,7 @@ async def root():
 app.include_router(health_router)
 app.include_router(projects_router)
 app.include_router(phases_router)
-
+app.include_router(boardroom)
 
 # ==================================================
 # STARTUP EVENT
