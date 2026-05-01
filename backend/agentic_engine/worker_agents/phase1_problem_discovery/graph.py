@@ -19,6 +19,13 @@ from .agents.judge_agent import run_judge_agent
 # -------------------------
 
 def pain_node(state):
+    if state.get("retry_count", 0) > 0:
+        print(f" Retry iteration: {state['retry_count']}")
+
+        # Optional cleanup
+        state["search_results"] = []
+        state["complaints"] = []
+
     print("Running Pain Evidence Agent...")
     return run_pain_evidence_agent(state)
 
@@ -53,17 +60,21 @@ def judge_node(state):
 # -------------------------
 
 def retry_or_end(state):
-    result = str(state["final_decision"]).lower()
+    decision = state.get("final_decision", {})
 
-    if "reject" in result:
-        return "retry"
+    if isinstance(decision, dict):
+        decision_text = str(decision.get("decision", "")).lower()
+    else:
+        decision_text = str(decision).lower()
 
-    if "pivot" in result:
+    retries = state.get("retry_count", 0)
+    max_retries = state.get("max_retries", 1)
+
+    if ("reject" in decision_text or "pivot" in decision_text) and retries < max_retries:
+        state["retry_count"] = retries + 1
         return "retry"
 
     return "end"
-
-
 # -------------------------
 # BUILD GRAPH
 # -------------------------
@@ -125,7 +136,9 @@ def run_phase1(founder_input: str):
         "pain_evidence": {},
         "alternatives": {},
         "objective": "",
-        "final_decision": {}
+        "final_decision": {},
+        "retry_count": 0,
+        "max_retries": 1   # or 2
     }
 
     result = app.invoke(initial_state)

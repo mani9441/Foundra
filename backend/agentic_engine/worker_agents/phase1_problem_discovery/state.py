@@ -16,3 +16,6 @@ class DiscoveryState(TypedDict):
     objective: str
 
     final_decision: Dict[str, Any]
+
+    retry_count: int
+    max_retries: int
