@@ -26,4 +26,4 @@ psycopg2-binary
 supabase
 langchain_openai
 reportlab
-pptx
+python-pptx
