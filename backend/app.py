@@ -9,7 +9,7 @@ from .routes.health import router as health_router
 from .routes.projects import router as projects_router
 from .routes.phases import router as phases_router
 from .routes.boardroom import router as boardroom
-
+from .routes.export import router as export_router
 
 # Define the lifespan logic
 @asynccontextmanager
@@ -90,6 +90,7 @@ app.include_router(health_router)
 app.include_router(projects_router)
 app.include_router(phases_router)
 app.include_router(boardroom)
+app.include_router(export_router)
 
 # ==================================================
 # STARTUP EVENT
