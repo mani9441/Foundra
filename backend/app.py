@@ -42,6 +42,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:8080",
         "http://localhost:5173",
+        "https://foundra-main.vercel.app"
         "*"   # replace with frontend domain in prod
     ],
     allow_credentials=True,
