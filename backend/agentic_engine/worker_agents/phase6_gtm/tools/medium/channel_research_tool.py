@@ -3,7 +3,7 @@
 # Finds best acquisition channels
 # ============================================================
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ...llm import get_llm
 
 from ..atomic.web_search import web_search
 from ..atomic.social_trend_search import social_trend_search

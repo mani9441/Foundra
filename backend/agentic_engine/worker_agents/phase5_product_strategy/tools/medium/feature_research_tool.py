@@ -7,7 +7,7 @@
 import json
 import re
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ...llm import get_llm
 
 from ..atomic.competitor_search_tool import competitor_search
 from ..atomic.pricing_lookup_tool import pricing_lookup

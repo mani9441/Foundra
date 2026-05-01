@@ -4,7 +4,7 @@
 
 from typing import Dict, Any, List
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ...llm import get_llm
 from ...utils.json_parser import extract_json
 
 from ..atomic.user_forum_scraper import user_forum_scraper_tool

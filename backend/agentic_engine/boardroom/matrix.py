@@ -64,7 +64,7 @@ def _parse_cell(text: str) -> Tuple[str, str]:
 
 def build_agreement_matrix(state: BoardState, llm=None) -> List[MatrixCell]:
     if llm is None:
-        llm = get_llm()
+        llm = get_llm("github","gpt-4o-mini")
 
     chain  = MATRIX_PROMPT | llm
     roles  = list(Role)

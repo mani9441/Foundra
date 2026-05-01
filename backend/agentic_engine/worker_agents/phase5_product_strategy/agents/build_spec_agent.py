@@ -5,7 +5,7 @@
 
 import json
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ..llm import get_llm
 from ..tools.medium import run_architecture_recommender
 
 llm = get_llm()

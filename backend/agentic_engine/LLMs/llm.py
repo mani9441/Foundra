@@ -8,7 +8,13 @@ MODEL = os.getenv("LLM_MODEL", "")
 TEMP = float(os.getenv("LLM_TEMPERATURE", "0.2"))
 
 
-def get_llm():
+def require_env(key: str):
+    value = os.getenv(key)
+    if not value:
+        raise ValueError(f"{key} not found in environment variables")
+    return value
+
+def get_llm(PROVIDER=PROVIDER, MODEL=MODEL, TEMP=TEMP):
     """
     Universal LLM loader
     """
@@ -29,6 +35,7 @@ def get_llm():
 
     if PROVIDER == "google":
         from langchain_google_genai import ChatGoogleGenerativeAI 
+        require_env("GOOGLE_API_KEY")
         return ChatGoogleGenerativeAI(
             model=MODEL or "gemini-1.5-pro",
             temperature=TEMP
@@ -61,6 +68,7 @@ def get_llm():
 
     elif PROVIDER == "groq":
         from langchain_groq import ChatGroq
+        require_env("GROQ_API_KEY")
         
         return ChatGroq(
             model=MODEL or "llama-3.1-8b-instant",
@@ -73,23 +81,46 @@ def get_llm():
     elif PROVIDER == "github":
         """
         GitHub Models via Azure OpenAI-compatible endpoint
-        Need:
-        GITHUB_TOKEN=your_pat_token
+        Supports fallback between multiple tokens
         """
 
         from langchain_openai import ChatOpenAI
 
-        github_token = os.getenv("GITHUB_TOKEN")
+        tokens = [
+            os.getenv("MY_GITHUB_TOKEN_1"),
+            os.getenv("MY_GITHUB_TOKEN_2"),
+            os.getenv("MY_GITHUB_TOKEN_3"),
+        ]
 
-        if not github_token:
-            raise ValueError("GITHUB_TOKEN not found in .env")
+        # Remove empty ones
+        tokens = [t for t in tokens if t]
 
-        return ChatOpenAI(
-            model=MODEL or "gpt-4o-mini",
-            temperature=TEMP,
-            api_key=github_token,
-            base_url="https://models.github.ai/inference"
-        )
+        if not tokens:
+            raise ValueError("No GitHub tokens found")
+
+        last_error = None
+
+        for token in tokens:
+            try:
+                llm = ChatOpenAI(
+                    model=MODEL or "gpt-4o-mini",
+                    temperature=TEMP,
+                    api_key=token,
+                    base_url="https://models.github.ai/inference"
+                )
+
+                # Test call (important)
+                llm.invoke("ping")
+
+                print("Using GitHub token:", token[:5], "...")
+                return llm
+
+            except Exception as e:
+                print(f"[GitHub] Token failed: {token[:5]}... → {e}")
+                last_error = e
+                continue
+
+        raise RuntimeError(f"All GitHub tokens failed: {last_error}")
 
 
     else:

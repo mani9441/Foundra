@@ -1,4 +1,4 @@
-from backend.agentic_engine.LLMs.llm import get_llm
+from ...llm import get_llm
 
 from ..atomic.company_finder import find_companies
 from ..atomic.pricing_scraper import scrape_pricing

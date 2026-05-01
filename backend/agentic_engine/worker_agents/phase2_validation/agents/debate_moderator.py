@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from backend.agentic_engine.LLMs.llm import get_llm
+from ..llm import get_llm
 from ..utils.json_parser import extract_json
 
 

@@ -1,4 +1,4 @@
-from backend.agentic_engine.LLMs.llm import get_llm
+from ..llm import get_llm
 from ..utils.json_parser import safe_json_parse
 
 llm = get_llm()

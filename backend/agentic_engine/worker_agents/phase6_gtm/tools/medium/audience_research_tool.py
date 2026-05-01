@@ -3,7 +3,7 @@
 # Pain points / desires / objections
 # ============================================================
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ...llm import get_llm
 
 from ..atomic.social_trend_search import social_trend_search
 from ..atomic.web_search import web_search

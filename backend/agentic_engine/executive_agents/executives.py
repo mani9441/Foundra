@@ -208,7 +208,7 @@ class ExecutiveAgent:
         self.role        = role
         self.personality = PERSONALITIES[role]
         self.r1_question = R1_QUESTIONS[role]
-        self.llm         = get_llm()
+        self.llm         = get_llm("github","gpt-4o-mini")
         self.chain       = BASE_PROMPT | self.llm
 
     def _build_inputs(

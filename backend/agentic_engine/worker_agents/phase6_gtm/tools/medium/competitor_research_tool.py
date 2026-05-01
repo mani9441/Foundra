@@ -3,7 +3,7 @@
 # Uses atomic tools + LLM reasoning
 # ============================================================
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ...llm import get_llm
 
 from ..atomic.competitor_search import competitor_search
 from ..atomic.pricing_lookup import pricing_lookup

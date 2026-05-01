@@ -95,9 +95,9 @@ def run_phase_gate(
         })
 
         # Save output after first call (for single cycle)
-        if output_file is None:
-            output_file = save_boardroom_output(result, startup_name, phase)
-            print(f"\n  [SAVED] Boardroom JSON → {output_file}")
+        # if output_file is None:
+        #     output_file = save_boardroom_output(result, startup_name, phase)
+        #     print(f"\n  [SAVED] Boardroom JSON → {output_file}")
 
         # Extract info for loop decision
         session = result.get("session", {})

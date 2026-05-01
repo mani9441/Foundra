@@ -3,7 +3,7 @@
 # Messaging / ad copy / CTA
 # ============================================================
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ...llm import get_llm
 from ...utils.json_parser import parse_llm_json
 
 llm = get_llm()

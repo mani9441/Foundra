@@ -7,7 +7,7 @@
 import json
 import re
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ..llm import get_llm
 
 llm = get_llm()
 

@@ -5,7 +5,7 @@
 
 import json
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ...llm import get_llm
 
 from ..atomic.tech_stack_lookup_tool import tech_stack_lookup
 

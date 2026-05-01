@@ -6,7 +6,7 @@
 from langchain.chat_models import init_chat_model
 from ..state import MarketResearchState
 
-from backend.agentic_engine.LLMs.llm import get_llm
+from ..llm import get_llm
 llm =  get_llm()
 
 

@@ -1,5 +1,5 @@
 from backend.agentic_engine.tools.medium_level_tools.medium.evidence_validator import evidence_validator
-from backend.agentic_engine.LLMs.llm import get_llm
+from ..llm import get_llm
 
 llm = get_llm()
 
